@@ -8,8 +8,6 @@ It also provides tight control over timeouts and control over handshaking lines.
 
 ### Documentation
 
-Website: http://wjwwood.github.io/serial/
-
 API Documentation: http://wjwwood.github.io/serial/doc/1.1.0/index.html
 
 ### Fork changes
