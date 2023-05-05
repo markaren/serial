@@ -1,0 +1,3 @@
+
+add_executable(serial_example serial_example.cc)
+target_link_libraries(serial_example PRIVATE serial)
