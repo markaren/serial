@@ -12,7 +12,7 @@ API Documentation: http://wjwwood.github.io/serial/doc/1.1.0/index.html
 
 ### Fork changes
 
-This fork has replaced the previous build setup in order to sucessfully build with no extra dependencies.
+This fork has replaced the previous build setup in order to successfully build with no extra dependencies.
 Build it as any other regular CMake project. 
 
 ### License
