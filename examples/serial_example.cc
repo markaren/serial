@@ -20,32 +20,10 @@
 #include <iostream>
 #include <string>
 
-// OS Specific sleep
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
 #include "serial/serial.h"
 
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::exception;
-using std::string;
-using std::vector;
-
-void my_sleep(unsigned long milliseconds) {
-#ifdef _WIN32
-  Sleep(milliseconds); // 100 ms
-#else
-  usleep(milliseconds * 1000); // 100 ms
-#endif
-}
-
 void enumerate_ports() {
-  vector<serial::PortInfo> devices_found = serial::list_ports();
+  std::vector<serial::PortInfo> devices_found = serial::list_ports();
 
   auto iter = devices_found.begin();
 
@@ -58,8 +36,8 @@ void enumerate_ports() {
 }
 
 void print_usage() {
-  cerr << "Usage: test_serial {-e|<serial port address>} ";
-  cerr << "<baudrate> [test string]" << endl;
+  std::cerr << "Usage: test_serial {-e|<serial port address>} ";
+  std::cerr << "<baudrate> [test string]" << std::endl;
 }
 
 int run(int argc, char **argv) {
@@ -69,7 +47,7 @@ int run(int argc, char **argv) {
   }
 
   // Argument 1 is the serial port or enumerate flag
-  string port(argv[1]);
+  std::string port(argv[1]);
 
   if (port == "-e") {
     enumerate_ports();
@@ -90,15 +68,13 @@ int run(int argc, char **argv) {
   // port, baudrate, timeout in milliseconds
   serial::Serial my_serial(port, baud, serial::Timeout::simpleTimeout(1000));
 
-  cout << "Is the serial port open?";
-  if (my_serial.isOpen())
-    cout << " Yes." << endl;
-  else
-    cout << " No." << endl;
+  if (!my_serial.isOpen()) {
+    return 1;
+  }
 
   // Get the Test string
   int count = 0;
-  string test_string;
+  std::string test_string;
   if (argc == 4) {
     test_string = argv[3];
   } else {
@@ -106,15 +82,16 @@ int run(int argc, char **argv) {
   }
 
   // Test the timeout, there should be 1 second between prints
-  cout << "Timeout == 1000ms, asking for 1 more byte than written." << endl;
+  std::cout << "Timeout == 1000ms, asking for 1 more byte than written."
+            << std::endl;
   while (count < 10) {
     size_t bytes_wrote = my_serial.write(test_string);
 
-    string result = my_serial.read(test_string.length() + 1);
+    std::string result = my_serial.read(test_string.length() + 1);
 
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
+    std::cout << "Iteration: " << count << ", Bytes written: ";
+    std::cout << bytes_wrote << ", Bytes read: ";
+    std::cout << result.length() << ", String read: " << result << std::endl;
 
     count += 1;
   }
@@ -122,45 +99,48 @@ int run(int argc, char **argv) {
   // Test the timeout at 250ms
   my_serial.setTimeout(serial::Timeout::max(), 250, 0, 250, 0);
   count = 0;
-  cout << "Timeout == 250ms, asking for 1 more byte than written." << endl;
+  std::cout << "Timeout == 250ms, asking for 1 more byte than written."
+            << std::endl;
   while (count < 10) {
     size_t bytes_wrote = my_serial.write(test_string);
 
-    string result = my_serial.read(test_string.length() + 1);
+    std::string result = my_serial.read(test_string.length() + 1);
 
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
+    std::cout << "Iteration: " << count << ", Bytes written: ";
+    std::cout << bytes_wrote << ", Bytes read: ";
+    std::cout << result.length() << ", String read: " << result << std::endl;
 
     count += 1;
   }
 
   // Test the timeout at 250ms, but asking exactly for what was written
   count = 0;
-  cout << "Timeout == 250ms, asking for exactly what was written." << endl;
+  std::cout << "Timeout == 250ms, asking for exactly what was written."
+            << std::endl;
   while (count < 10) {
     size_t bytes_wrote = my_serial.write(test_string);
 
-    string result = my_serial.read(test_string.length());
+    std::string result = my_serial.read(test_string.length());
 
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
+    std::cout << "Iteration: " << count << ", Bytes written: ";
+    std::cout << bytes_wrote << ", Bytes read: ";
+    std::cout << result.length() << ", String read: " << result << std::endl;
 
     count += 1;
   }
 
   // Test the timeout at 250ms, but asking for 1 less than what was written
   count = 0;
-  cout << "Timeout == 250ms, asking for 1 less than was written." << endl;
+  std::cout << "Timeout == 250ms, asking for 1 less than was written."
+            << std::endl;
   while (count < 10) {
     size_t bytes_wrote = my_serial.write(test_string);
 
-    string result = my_serial.read(test_string.length() - 1);
+    std::string result = my_serial.read(test_string.length() - 1);
 
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
+    std::cout << "Iteration: " << count << ", Bytes written: ";
+    std::cout << bytes_wrote << ", Bytes read: ";
+    std::cout << result.length() << ", String read: " << result << std::endl;
 
     count += 1;
   }
@@ -171,7 +151,7 @@ int run(int argc, char **argv) {
 int main(int argc, char **argv) {
   try {
     return run(argc, argv);
-  } catch (exception &e) {
-    cerr << "Unhandled Exception: " << e.what() << endl;
+  } catch (std::exception &e) {
+    std::cerr << "Unhandled Exception: " << e.what() << std::endl;
   }
 }
