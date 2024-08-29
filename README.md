@@ -15,6 +15,22 @@ API Documentation: http://wjwwood.github.io/serial/doc/1.1.0/index.html
 This fork has replaced the previous build setup in order to successfully build with no extra dependencies.
 Build it as any other regular CMake project. 
 
+#### Usage with CMake FetchContent
+
+```cmake
+set(SERIAL_BUILD_EXAMPLES OFF)
+FetchContent_Declare(
+        serial
+        GIT_REPOSITORY https://github.com/markaren/serial.git
+        GIT_TAG <git_tag_or_commit_id>
+)
+FetchContent_MakeAvailable(serial)
+
+...
+
+target_link_libraries(<target> PRIVATE serial)
+```
+
 ### License
 
 [The MIT License](LICENSE)
