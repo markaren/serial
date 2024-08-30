@@ -18,6 +18,7 @@ Build it as any other regular CMake project.
 #### Usage with CMake FetchContent
 
 ```cmake
+include(FetchContent)
 set(SERIAL_BUILD_EXAMPLES OFF)
 FetchContent_Declare(
         serial
