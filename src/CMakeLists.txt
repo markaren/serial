@@ -21,6 +21,7 @@ else ()
 endif ()
 
 add_library(serial ${sources})
+add_library(serial::serial ALIAS serial)
 target_include_directories(serial
         PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>"
@@ -36,3 +37,5 @@ elseif (APPLE)
 else ()
     target_link_libraries(serial PRIVATE rt pthread)
 endif ()
+
+set_target_properties(serial PROPERTIES POSITION_INDEPENDENT_CODE ON)
